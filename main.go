@@ -27,12 +27,11 @@ var (
 	getVersion       = flag.Bool("version", false, "return version information and exit")
 	versionGauge     = prometheus.NewGauge(
 		prometheus.GaugeOpts{
-			Namespace: "ft_agent",
-			Subsystem: "version",
+			Namespace: "bomb_squad",
 			Name:      "details",
-			Help:      "Static series that tracks the current schema version in use by the FreshTracks Agent",
+			Help:      "Static series that tracks the current versions of all the things in Bomb Squad",
 			ConstLabels: map[string]string{
-				"bomb_squad_version":       version,
+				"version":                  version,
 				"prometheus_version":       promVersion,
 				"prometheus_rules_version": promRulesVersion,
 			},
@@ -42,9 +41,12 @@ var (
 
 func init() {
 	prometheus.MustRegister(versionGauge)
+	prometheus.MustRegister(patrol.ExplodingLabelGauge)
 }
 
 func bootstrap(ctx context.Context, c configmap.ConfigMap) {
+	// TODO: Don't do this file write if the file already exists, but DO write the file
+	// if it's not present on disk but still present in the ConfigMap
 	b, err := ioutil.ReadFile("/etc/bomb-squad/rules.yaml")
 	if err != nil {
 		log.Fatal(err)

@@ -1,5 +1,5 @@
 groups:
-- name: card_counter
+- name: bomb_squad_card_counter
   interval: 10s
   rules:
   - record: card_count

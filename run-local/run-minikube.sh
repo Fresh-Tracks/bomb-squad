@@ -60,4 +60,4 @@ ${KS} apply --insecure-skip-tls-verify minikube
 popd > /dev/null
 
 #kubectl delete pod -l app=bomb-squad 2> /dev/null
-docker rm -f $(docker ps | grep bomb-squad | awk '{ print $1 }')
+docker rm -f $(docker ps | grep /bin/bs | awk '{ print $1 }')

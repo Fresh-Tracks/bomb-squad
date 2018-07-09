@@ -42,6 +42,18 @@ local appDeployment =
     params.replicas,
     [
       container
+      .new('bomb-squad', bs.image + ':' + bs.imageTag)
+      .withPorts(containerPort.new(bs.containerPort))
+      .withArgs(['-prom-url=localhost:9090'])
+      .withImagePullPolicy('Never')
+      .withVolumeMounts([
+        {
+          name: 'bomb-squad-rules',
+          mountPath: '/etc/config/bomb-squad',
+          readOnly: false,
+        },
+      ]),
+      container
       .new('prometheus', params.promImage)
       .withArgs([
         '--config.file=/etc/config/prometheus.yml',
@@ -81,18 +93,6 @@ local appDeployment =
           name: 'prom-cfg',
           mountPath: '/etc/config',
           readOnly: true,
-        },
-      ]),
-      container
-      .new('bomb-squad', bs.image + ':' + bs.imageTag)
-      .withPorts(containerPort.new(bs.containerPort))
-      .withArgs(['-prom-url=localhost:9090'])
-      .withImagePullPolicy('Never')
-      .withVolumeMounts([
-        {
-          name: 'bomb-squad-rules',
-          mountPath: '/etc/config/bomb-squad',
-          readOnly: false,
         },
       ]),
     ],
