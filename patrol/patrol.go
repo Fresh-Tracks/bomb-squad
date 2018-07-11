@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Fresh-Tracks/bomb-squad/configmap"
+	configmap "github.com/Fresh-Tracks/bomb-squad/k8s/configmap"
 	"github.com/Fresh-Tracks/bomb-squad/prom"
 	promcfg "github.com/Fresh-Tracks/bomb-squad/prom/config"
 )

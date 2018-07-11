@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Fresh-Tracks/bomb-squad/configmap"
+	configmap "github.com/Fresh-Tracks/bomb-squad/k8s/configmap"
 	"github.com/Fresh-Tracks/bomb-squad/patrol"
 	"github.com/Fresh-Tracks/bomb-squad/prom"
 	"github.com/Fresh-Tracks/bomb-squad/util"
