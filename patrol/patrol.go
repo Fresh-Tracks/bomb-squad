@@ -36,7 +36,6 @@ type BombSquadMetricConfig struct {
 }
 
 func (p *Patrol) Run() {
-	//p.Bootstrap()
 	ticker := time.NewTicker(time.Duration(p.Interval) * time.Second)
 	for _ = range ticker.C {
 		err := p.getTopCardinalities()
@@ -94,7 +93,26 @@ func (p *Patrol) RemoveSilence(label string) error {
 		}
 	}
 
-	p.ConfigMap.Update(p.Ctx, promConfig)
+	if len(bsCfg.SuppressedMetrics[metricName]) == 1 {
+		delete(bsCfg.SuppressedMetrics, metricName)
+	} else {
+		delete(bsCfg.SuppressedMetrics[metricName], labelName)
+	}
+
+	bsCfgBytes, err := yaml.Marshal(bsCfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	promConfigBytes, err := yaml.Marshal(promConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	p.ConfigMap.CM.Data["bomb-squad.yaml"] = string(bsCfgBytes)
+	p.ConfigMap.CM.Data[p.ConfigMap.Key] = string(promConfigBytes)
+	p.ConfigMap.UpdateWithRetries(5)
+
 	return nil
 }
 

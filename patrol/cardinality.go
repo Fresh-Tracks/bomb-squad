@@ -52,6 +52,7 @@ func (p *Patrol) getTopCardinalities() error {
 		mrc := promcfg.GenerateMetricRelabelConfig(s)
 		mrc.ReUnmarshal()
 
+		fmt.Printf("Inserting, where needed, the silence rule for %s.%s...\n", s.MetricName, s.HighCardLabelName)
 		newPromConfig := p.InsertMetricRelabelConfigToPromConfig(mrc)
 
 		err := p.ConfigMap.Update(p.Ctx, newPromConfig)
@@ -186,6 +187,7 @@ func (p *Patrol) findHighCardSeries(metrics []string) []promcfg.HighCardSeries {
 				HighCardLabelName: hwmLabel,
 			},
 		)
+		fmt.Printf("Detected exploding label \"%s\" on metric \"%s\"\n", hwmLabel, metricName)
 		ExplodingLabelGauge.WithLabelValues(metricName, hwmLabel).Set(float64(hwm))
 	}
 

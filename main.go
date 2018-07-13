@@ -87,7 +87,7 @@ func main() {
 
 	p := patrol.Patrol{
 		PromURL:           *promURL,
-		Interval:          15,
+		Interval:          5,
 		HighCardN:         5,
 		HighCardThreshold: 100,
 		Client:            client,
