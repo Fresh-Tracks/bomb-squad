@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	configmap "github.com/Fresh-Tracks/bomb-squad/k8s/configmap"
 	"github.com/Fresh-Tracks/bomb-squad/patrol"
@@ -57,7 +58,6 @@ func bootstrap(ctx context.Context, c configmap.ConfigMap) {
 }
 
 func main() {
-	fmt.Println("Welcome to bomb-squad")
 	flag.Parse()
 	if *getVersion {
 		out := ""
@@ -70,8 +70,6 @@ func main() {
 		}
 		log.Fatal(out)
 	}
-
-	log.Println("serving prometheus endpoints on port 8080")
 
 	client, err := util.HttpClient()
 	if err != nil {
@@ -94,6 +92,21 @@ func main() {
 		HighCardThreshold: 100,
 		Client:            client,
 		ConfigMap:         &cm,
+		Ctx:               ctx,
+	}
+
+	cmd := os.Args[1]
+	if cmd == "list" {
+		fmt.Println("Suppressed Labels (metricName.labelName):")
+		p.ListSuppressedMetrics()
+		os.Exit(0)
+	}
+
+	if cmd == "unsilence" {
+		label := os.Args[2]
+		fmt.Printf("Removing silence rule for suppressed label: %s\n", label)
+		p.RemoveSilence(label)
+		os.Exit(0)
 	}
 
 	bootstrap(ctx, cm)
@@ -107,5 +120,8 @@ func main() {
 		Addr:    fmt.Sprintf(":%d", *metricsPort),
 		Handler: mux,
 	}
+
+	fmt.Println("Welcome to bomb-squad")
+	log.Println("serving prometheus endpoints on port 8080")
 	log.Fatal(server.ListenAndServe())
 }
