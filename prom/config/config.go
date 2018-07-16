@@ -83,6 +83,7 @@ type RelabelConfig struct {
 // ReUnmarshal simply marshals a RelabelConfig and unmarshals it again back into place.
 // This is needed to accomodate an "expansion", if you will, of the prometheus.config
 // Regexp struct's string representation that happens only upon unmarshalling it.
+// TODO: (TODON'T?) Instead of this, figure out the unmarshalling quirk and change it
 func (rc *RelabelConfig) ReUnmarshal() {
 	s, err := yaml.Marshal(rc)
 	if err != nil {

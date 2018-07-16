@@ -52,7 +52,6 @@ func (p *Patrol) getTopCardinalities() error {
 		mrc := promcfg.GenerateMetricRelabelConfig(s)
 		mrc.ReUnmarshal()
 
-		fmt.Printf("Inserting, where needed, the silence rule for %s.%s...\n", s.MetricName, s.HighCardLabelName)
 		newPromConfig := p.InsertMetricRelabelConfigToPromConfig(mrc)
 
 		err := p.ConfigMap.Update(p.Ctx, newPromConfig)
