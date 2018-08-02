@@ -1,7 +1,8 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+Thank you for taking the time to contribute! When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change. 
+
+Before you submit any PRs, we encourage you to read the instructions for the [developer certificate of origin (DCO)](DCO-SIGNOFF.md), as well as the guidelines below:
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
