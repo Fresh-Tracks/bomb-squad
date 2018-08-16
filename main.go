@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	configmap "github.com/Fresh-Tracks/bomb-squad/k8s/configmap"
@@ -71,9 +72,14 @@ func main() {
 		log.Fatal(out)
 	}
 
+	promurl, err := url.Parse(*promURL)
+	if err != nil {
+		log.Fatalf("could not parse prometheus url: %s", err)
+	}
+
 	client, err := util.HttpClient()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("could not create http client: %s", err)
 	}
 
 	ctx := context.Background()
@@ -86,7 +92,7 @@ func main() {
 	cm.Init(ctx)
 
 	p := patrol.Patrol{
-		PromURL:           *promURL,
+		PromURL:           promurl,
 		Interval:          5,
 		HighCardN:         5,
 		HighCardThreshold: 100,
