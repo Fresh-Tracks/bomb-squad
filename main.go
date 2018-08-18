@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
 	configmap "github.com/Fresh-Tracks/bomb-squad/k8s/configmap"
 	"github.com/Fresh-Tracks/bomb-squad/patrol"
@@ -93,7 +94,7 @@ func main() {
 
 	p := patrol.Patrol{
 		PromURL:           promurl,
-		Interval:          5,
+		Interval:          5 * time.Second,
 		HighCardN:         5,
 		HighCardThreshold: 100,
 		Client:            client,
