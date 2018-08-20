@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"time"
 
+	promcfg "github.com/prometheus/prometheus/config"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -95,8 +96,13 @@ func (rc *RelabelConfig) ReUnmarshal() {
 	}
 }
 
-func (rc *RelabelConfig) Encode() string {
-	s := fmt.Sprintf("%s", rc)
+func Encode(rc promcfg.RelabelConfig) string {
+	b, err := yaml.Marshal(rc)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := fmt.Sprintf("%s", string(b))
 	return base64.StdEncoding.EncodeToString([]byte(s))
 }
 

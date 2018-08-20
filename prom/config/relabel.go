@@ -2,29 +2,35 @@ package config
 
 import (
 	"fmt"
-	"regexp"
+	"log"
+
+	"github.com/prometheus/common/model"
+	promcfg "github.com/prometheus/prometheus/config"
 )
 
 // HighCardSeries represents a Prometheus series that has been idenitified as
 // high cardinality
 type HighCardSeries struct {
 	MetricName        string
-	HighCardLabelName string
+	HighCardLabelName model.LabelName
 }
 
 // TODO: Only generate the relabel config for the appropriate job that is spitting out
 // the high-cardinality metric
 // TODO: Within a job, some series may never be exploding on this label. Consider including
 // all relevant labels in source_labels...?
-func GenerateMetricRelabelConfig(s HighCardSeries) RelabelConfig {
+func GenerateMetricRelabelConfig(s HighCardSeries) promcfg.RelabelConfig {
 	valueReplace := "bs_silence"
 	regexpOriginal := fmt.Sprintf("^%s;.*$", s.MetricName)
-	regex := regexp.MustCompile(regexpOriginal)
-	promRegex := Regexp{regex, regexpOriginal}
-	newMetricRelabelConfig := RelabelConfig{
-		SourceLabels: []string{"__name__", s.HighCardLabelName},
+	promRegex, err := promcfg.NewRegexp(regexpOriginal)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	newMetricRelabelConfig := promcfg.RelabelConfig{
+		SourceLabels: model.LabelNames{"__name__", s.HighCardLabelName},
 		Regex:        promRegex,
-		TargetLabel:  s.HighCardLabelName,
+		TargetLabel:  string(s.HighCardLabelName),
 		Replacement:  valueReplace,
 		Action:       "replace",
 	}
