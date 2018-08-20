@@ -39,6 +39,8 @@ $(BOMB_SQUAD_UPTODATE): $(BOMB_SQUAD_FILES)
 		--tag $(BOMB_SQUAD_IMG) . \
 		&& touch $(BOMB_SQUAD_UPTODATE)
 
+test:
+	$(GOCMD) test -v ./...
 build: $(BOMB_SQUAD_UPTODATE) ## Docker-based build of relevant exes
 
 bomb-squad: $(BOMB_SQUAD_UPTODATE) ## Build local bomb-squad image
