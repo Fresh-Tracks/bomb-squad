@@ -62,7 +62,6 @@ func (p *Patrol) getTopCardinalities() error {
 
 	for _, s := range highCardSeries {
 		mrc := promcfg.GenerateMetricRelabelConfig(s)
-		//mrc.ReUnmarshal()
 
 		newPromConfig := p.InsertMetricRelabelConfigToPromConfig(mrc)
 
