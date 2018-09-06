@@ -32,6 +32,9 @@ jobs:
         name: Test
         command: make test
     - run:
+        name: Install gometalinter
+        command: curl https://git.io/vp6lP | sh
+    - run:
         name: Lint
         command: make fastlint
 
