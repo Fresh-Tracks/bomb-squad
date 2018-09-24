@@ -35,3 +35,15 @@ func TestCanWriteBombSquadConfig(t *testing.T) {
 	err := config.WriteBombSquadConfig(bscfg, c)
 	require.NoError(t, err)
 }
+
+func TestCanInsertMetricRelabelConfigToPromConfig(t *testing.T) {
+	c := bstesting.NewConfigurator(t)
+	hcs := config.HighCardSeries{MetricName: "foo", HighCardLabelName: "bar"}
+	mrc, err := config.GenerateMetricRelabelConfig(hcs)
+	require.NoError(t, err)
+	promcfg, err := config.InsertMetricRelabelConfigToPromConfig(mrc, c)
+	require.NoError(t, err)
+	insertedMRC := promcfg.ScrapeConfigs[0].MetricRelabelConfigs[0]
+	require.Equal(t, "bar", insertedMRC.TargetLabel)
+	require.Equal(t, "^(?:^foo;.*$)$", insertedMRC.Regex.String())
+}
